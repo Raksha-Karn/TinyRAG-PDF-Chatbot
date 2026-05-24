@@ -50,7 +50,7 @@ def ingest_pdf(uploaded_file, api_key: str, file_hash: str) -> Chroma:
     return vector_store
 
 def build_rag_chain(vector_store, api_key):
-    llm = ChatGoogleGenerativeAI(model="gemini-3.1-flash-lite", temperature=0, google_api_key=api_key)
+    llm = ChatGoogleGenerativeAI(model="gemini-3.1-flash-lite", temperature=0, google_api_key=api_key, streaming=True)
     retriever = vector_store.as_retriever(search_kwargs={"k": 4})
     contextualize_q_system_prompt = (
         "Given the chat history and latest "
@@ -128,5 +128,32 @@ def answer_question(rag_chain, question, messages) -> dict:
 
     return {
         "answer": result["answer"],
+        "source_pages": pages
+    }
+
+def stream_answer(rag_chain, question, messages):
+    chat_history = format_chat_history(messages)
+    response_text = ""
+    pages = []
+
+    for chunk in rag_chain.stream({
+        "input": question,
+        "chat_history": chat_history
+    }):
+        if "answer" in chunk:
+            response_text += chunk["answer"]
+
+            yield {
+                "type": "token",
+                "content": response_text
+            } 
+        if "context" in chunk:
+            pages = sorted(list({
+                doc.metadata.get("page", 0) + 1 for doc in chunk["context"]
+            }))
+
+    yield{
+        "type": "final",
+        "answer": response_text,
         "source_pages": pages
     }
