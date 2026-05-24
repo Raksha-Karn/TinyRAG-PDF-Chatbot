@@ -40,6 +40,7 @@ with st.sidebar:
                     vector_store = ingest_pdf(uploaded, user_api_key, file_hash)
                     chain = build_rag_chain(vector_store, user_api_key)
                     st.session_state["vector_store"] = vector_store
+                    st.session_state["chain"] = chain
                     st.session_state["file_hash"] = file_hash
                     st.session_state["messages"] = []
                     
@@ -66,7 +67,8 @@ if question := st.chat_input("Ask something about the PDF: "):
     with st.chat_message("assistant"):
         with st.spinner("Thinking.."):
             result = answer_question(st.session_state["chain"], question, st.session_state["messages"])
-        st.markdown(result["answer"])
+        answer = result["answer"]
+        st.markdown(answer)
 
         if result["source_pages"]:
             pages_str = ", ".join(map(str, result["source_pages"]))
