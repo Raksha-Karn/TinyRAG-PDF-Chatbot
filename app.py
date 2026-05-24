@@ -1,7 +1,7 @@
 import hashlib
 import streamlit as st
 import uuid
-from rag_pipeline import ingest_pdf, answer_question, build_chain, load_chat, save_chat
+from rag_pipeline import ingest_pdf, answer_question, build_rag_chain, load_chat, save_chat
 
 st.set_page_config(page_title="PDF Q&A", page_icon="📄", layout="centered")
 st.title("Chat with your PDF 📄")
@@ -38,7 +38,7 @@ with st.sidebar:
 
                 with st.spinner("Reading and embedding your PDF"):
                     vector_store = ingest_pdf(uploaded, user_api_key, file_hash)
-                    chain = build_chain(vector_store, user_api_key)
+                    chain = build_rag_chain(vector_store, user_api_key)
                     st.session_state["vector_store"] = vector_store
                     st.session_state["file_hash"] = file_hash
                     st.session_state["messages"] = []
@@ -65,7 +65,7 @@ if question := st.chat_input("Ask something about the PDF: "):
 
     with st.chat_message("assistant"):
         with st.spinner("Thinking.."):
-            result = answer_question(st.session_state["chain"], question=question)
+            result = answer_question(st.session_state["chain"], question, st.session_state["messages"])
         st.markdown(result["answer"])
 
         if result["source_pages"]:
