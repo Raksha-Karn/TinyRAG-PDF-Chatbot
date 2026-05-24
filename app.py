@@ -65,29 +65,30 @@ if question := st.chat_input("Ask something about the PDF: "):
         st.markdown(question)
 
     with st.chat_message("assistant"):
-        message_placeholder = st.empty()
-        full_response = ""
+        with st.spinner("Thinking"):
+            message_placeholder = st.empty()
+            full_response = ""
 
-        for chunk in stream_answer(
-            st.session_state["chain"],
-            question,
-            st.session_state["messages"]
-        ):
-            if chunk["type"] == "token":
-                full_response = chunk["content"]
-                message_placeholder.markdown(full_response + "▌")
-            elif chunk["type"] == "final":
-                full_response = chunk["answer"]
-                source_pages = chunk["source_pages"]
-        message_placeholder.markdown(full_response)
+            for chunk in stream_answer(
+                st.session_state["chain"],
+                question,
+                st.session_state["messages"]
+            ):
+                if chunk["type"] == "token":
+                    full_response = chunk["content"]
+                    message_placeholder.markdown(full_response + "▌")
+                elif chunk["type"] == "final":
+                    full_response = chunk["answer"]
+                    source_pages = chunk["source_pages"]
+            message_placeholder.markdown(full_response)
 
-        if source_pages:
-            pages_str = ", ".join(map(str, source_pages))
-            st.caption(f"Sources: page(s) {pages_str}")
-            full_response += (
-                f"\n\n*Sources: "
-                f"page(s) {pages_str}"
-            )     
+            if source_pages:
+                pages_str = ", ".join(map(str, source_pages))
+                st.caption(f"Sources: page(s) {pages_str}")
+                full_response += (
+                    f"\n\n*Sources: "
+                    f"page(s) {pages_str}"
+                )     
 
     st.session_state["messages"].append({
         "role": "assistant",
