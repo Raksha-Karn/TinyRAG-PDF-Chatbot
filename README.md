@@ -1,8 +1,5 @@
 # PDF Chatbot — AI Powered RAG Assistant
 
-<p align="center">
-  <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdTQ0MTR4bHJ3YjRrZ3Q4bHB4bnd0ZTBxYzQ3MnF5NjJvMXFqM2RrbiZlcD12MV9naWZzX3NlYXJjaCZjdD1n/l0HlNaQ6gWfllcjDO/giphy.gif" width="220"/>
-</p>
 
 <p align="center">
   <b>A beautiful AI-powered PDF Q&A app built with Streamlit, Gemini, LangChain, and ChromaDB.</b>
@@ -17,7 +14,10 @@
 
 ---
 
-# ✨ Features
+Wanna try it out? -> [Here you go!](https://pdf-qna-chatbott.streamlit.app/)
+
+
+#  Features
 
 -  Upload and chat with any PDF
 -  AI-powered answers using Gemini
@@ -31,7 +31,7 @@
 
 ---
 
-# 🧠 Tech Stack
+# Tech Stack
 
 | Technology                     | Purpose           |
 | ------------------------------ | ----------------- |
@@ -64,7 +64,7 @@
 9. Sources are shown with page numbers
 ---
 
-# 🚀 Installation
+# Installation
 
 ##  Clone the repository
 
